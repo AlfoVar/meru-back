@@ -6,24 +6,36 @@ RSpec.describe Products::UpdateProduct, type: :service do
     product.save
     product
   end
-  let(:new_params) { { name: 'Producto Actualizado', description: 'Descripción actualizada', price: 150.0 } }
+  let(:valid_params) { { name: 'Producto actualizado', description: 'Descripción actualizada', price: 150.0 } }
+  let(:invalid_params) { { name: '', description: '', price: nil } }
 
-  it 'actualiza un producto con los atributos correctos' do
-    service = described_class.new(product, new_params)
-    updated_product = service.call
+  it 'Actualiza un producto con los atributos correctos' do
+    service = described_class.new(product, valid_params)
+    result = service.call
 
-    expect(updated_product.name).to eq('Producto Actualizado')
-    expect(updated_product.description).to eq('Descripción actualizada')
-    expect(updated_product.price).to eq(150.0)
+    expect(result[:success]).to be true
+    expect(result[:product]).to eq(product)
+    expect(result[:product].name).to eq('Producto actualizado')
+    expect(result[:product].description).to eq('Descripción actualizada')
+    expect(result[:product].price).to eq(150.0)
   end
 
-  it 'no actualiza el producto si los parámetros son inválidos' do
-    invalid_params = { name: '', description: '', price: nil }
-    service = described_class.new(product, invalid_params)
-    updated_product = service.call
+  context 'Con parámetros inválidos' do
+    it 'devuelve un error para parámetros no válidos' do
+      service = Products::UpdateProduct.new(product, invalid_params)
+      result = service.call
 
-    expect(updated_product.name).not_to eq('')
-    expect(updated_product.description).not_to eq('')
-    expect(updated_product.price).not_to be_nil
+      expect(result[:success]).to be false
+      expect(result[:errors]).to eq('Parametros invalidos')
+    end
+
+    it 'devuelve un error por datos de producto no válidos.' do
+      invalid_product_params = { name: 'Producto actualizado', description: 'Descripción actualizada', price: 'invalid' }
+      service = Products::UpdateProduct.new(product, invalid_product_params)
+      result = service.call
+
+      expect(result[:success]).to be false
+      expect(result[:errors]).to include('Parametros invalidos')
+    end
   end
 end
