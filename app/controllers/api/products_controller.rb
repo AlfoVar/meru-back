@@ -4,11 +4,17 @@ class Api::ProductsController < ApplicationController
 
     def index
         @products = Product.all
-        render json: @products
+        render json: { message: 'Productos obtenidos exitosamente', products: @products }
     end
 
     def show
-        render json: @product
+        @product = Product.find_by(id: params[:id])
+  
+        if @product
+            render json: { message: 'Producto obtenido exitosamente', product: @product }
+        else
+            render json: { message: 'Producto no encontrado' }, status: :not_found
+        end
     end
 
     def create 
@@ -16,9 +22,9 @@ class Api::ProductsController < ApplicationController
         
         if result[:success]
             @product = result[:product]
-            render json: @product, status: :created
+            render json: { message: 'Producto creado exitosamente', product: @product }, status: :created
         else
-            render json: result[:errors], status: :unprocessable_entity
+            render json: { message: 'Error al crear el producto', errors: result[:error] }, status: :unprocessable_entity
         end
     end
 
@@ -26,15 +32,21 @@ class Api::ProductsController < ApplicationController
         result = Products::UpdateProduct.new(@product, product_params).call
         
         if result[:success]
-            render json: result[:product]
+            render json: { message: 'Se actualizo el prodcuto correctamente', product: result[:product] }
         else
-            render json: result[:errors], status: :unprocessable_entity
+            render json: { message: 'Hubo un problema al actualizar el producto', errors: result[:errors] }, status: :unprocessable_entity
         end
     end
 
     def destroy
-        Products::DeleteProduct.new(@product).call
-        head :no_content
+        @product = Product.find_by(id: params[:id])
+  
+        if @product
+            Products::DeleteProduct.new(@product).call
+            render json: { message: 'Producto eliminado exitosamente' }, status: :ok
+        else
+            render json: { message: 'Producto no encontrado' }, status: :not_found
+        end
     end
 
     private
