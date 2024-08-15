@@ -6,7 +6,7 @@ module Products
         end
 
         def call
-            return @product unles valid_params?
+            return @product unless valid_params?
 
             @product.update(@params)
             @product

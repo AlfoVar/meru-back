@@ -9,7 +9,7 @@ module Products
             if product.save
                 { success: true, product: product }
             else
-                { success: false, error: product.errors.full_message }
+                { success: false, error: product.errors.full_messages.join(', ') }
             end
         end
     end
