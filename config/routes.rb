@@ -4,4 +4,8 @@ Rails.application.routes.draw do
   end
   
   devise_for :users, controllers: { sessions: 'sessions' }
+
+  devise_scope :user do
+    delete 'logout', to: 'sessions#destroy'
+  end
 end
