@@ -62,8 +62,17 @@ Sigue estos pasos para configurar y ejecutar la aplicación en tu entorno local.
 
 ## Endpoints
 
-    Aquí puedes listar los principales endpoints de tu API. Ejemplo:
+    Aquí estan listados los endpoints para el CRUD de Productos
 
+- 
+- **POST /users/sing_in:**
+    : Logueo de usuario para generacion de token
+- **DELETE /Logout**
+: eliminación del token de autenticación.
+  Es necesario un token previamente generado.
+
+
+  Aquí están listados los endpoints para el CRUD de Productos.
 
 - **GET /api/products: Obtiene una lista de productos.**
 - **POST /api/products: Crea un nuevo producto.**
@@ -75,3 +84,6 @@ Sigue estos pasos para configurar y ejecutar la aplicación en tu entorno local.
   : Actualiza un producto existente.
 - **DELETE /api/products/id**
   : Elimina un producto.
+
+**Tener presente que en las peticiones deben tener el token de autorización**
+
